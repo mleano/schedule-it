@@ -63,18 +63,30 @@ function deleteCourse($eventId) {
   $dbh = null;
 }
 
-function updateCourse($eventId, $instructor, $course, $room) {
+function updateCourse($scheduleId, $instructor, $course, $room) {
   //Connect to database
   $dbh = dbConnect();
   $updateCourse = '';
+  // Retrieve unique ID for set of time
+  $selectBlockOfTimes = 'SELECT block_id from course_schedules where schedule_id = '.$scheduleId;
+
+  //Prepare the statement.
+  $statement = $dbh->prepare($selectBlockOfTimes);
+
+  $statement->execute();
+  $result = $statement->fetch(PDO::FETCH_ASSOC);
+  // Block ID represents a scheduled block of time
+  $blockId = $result['block_id'];
+
 
   //Build sql update query for instructor, course, room.
-  $updateCourse = 'UPDATE course_schedules SET instructor_id=:instructor, room_id=:room, course_id=:course WHERE schedule_id=:eventId';
+  // $updateCourse = 'UPDATE course_schedules SET instructor_id=:instructor, room_id=:room, course_id=:course WHERE schedule_id=:eventId';
+  $updateCourse = 'UPDATE course_schedules SET instructor_id=:instructor, room_id=:room, course_id=:course WHERE block_id=:blockId';
 
   //Prepare the statement.
   $statement = $dbh->prepare($updateCourse);
   //Bind the parameters
-  $statement->bindParam(':eventId', $eventId, PDO::PARAM_STR);
+  $statement->bindParam(':blockId', $blockId, PDO::PARAM_INT);
   $statement->bindParam(':instructor', $instructor, PDO::PARAM_STR);
   $statement->bindParam(':room', $room, PDO::PARAM_STR);
   $statement->bindParam(':course', $course, PDO::PARAM_STR);

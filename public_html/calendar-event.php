@@ -2,9 +2,8 @@
 include('../config.php');
 
 //Check if post is sent from ajax call.
-if(isset($_POST['type']) || isset($_POST['campus']) || isset($_POST['eventId'])) {
+if(isset($_POST['type']) || isset($_POST['eventId'])) {
   $type = $_POST['type'];
-  $campus = $_POST['campus'];
   $eventId = $_POST['eventId'];
 }
 //Update course
@@ -22,33 +21,26 @@ if(isset($_POST['start']) || isset($_POST['end'])) {
 //Select method based on type parameter.
 switch($type) {
   case 'updateCourse':
-    // echo json_encode(array('status' => 'success'));
-    updateCourse($campus, $eventId, $instructor, $course, $room);
+    updateCourse($eventId, $instructor, $course, $room);
     break;
   case 'updateStartEnd' :
-    updateStartEnd($campus, $eventId, $start, $end);
+    updateStartEnd($eventId, $start, $end);
     break;
   case 'deleteCourse':
-    deleteCourse($campus, $eventId);
+    deleteCourse($eventId);
     break;
   default:
     break;
 }
 
-function deleteCourse($campus, $eventId) {
+function deleteCourse($eventId) {
   //Connect to database
   $dbh = dbConnect();
   $deleteCourse = '';
 
   //Build sql update query for instructor, course, room.
-  if($campus === 'auburn') {
-    $deleteCourse = 'DELETE FROM auburn_course WHERE auburn_course_id=:eventId';
-  }
-  else {
-    if($campus === 'kent') {
-      $deleteCourse = 'DELETE FROM kent_course WHERE kent_course_id=:eventId';
-    }
-  }
+
+  $deleteCourse = 'DELETE FROM course_schedules WHERE schedule_id=:eventId';
 
   //Prepare the statement.
   $statement = $dbh->prepare($deleteCourse);
@@ -57,7 +49,7 @@ function deleteCourse($campus, $eventId) {
 
   //Execute campus course.
   $delete = $statement->execute();
-  
+
   if($delete) {
     //Return the id and campus in the success response.
     echo json_encode(array('status' => 'success'));
@@ -71,20 +63,13 @@ function deleteCourse($campus, $eventId) {
   $dbh = null;
 }
 
-function updateCourse($campus, $eventId, $instructor, $course, $room) {
+function updateCourse($eventId, $instructor, $course, $room) {
   //Connect to database
   $dbh = dbConnect();
   $updateCourse = '';
 
   //Build sql update query for instructor, course, room.
-  if($campus === 'auburn') {
-    $updateCourse = 'UPDATE auburn_course SET instructor_id=:instructor, room_id=:room, course_id=:course WHERE auburn_course_id=:eventId';
-  }
-  else {
-    if($campus === 'kent') {
-      $updateCourse = 'UPDATE kent_course SET instructor_id=:instructor, room_id=:room, course_id=:course WHERE kent_course_id=:eventId';
-    }
-  }
+  $updateCourse = 'UPDATE course_schedules SET instructor_id=:instructor, room_id=:room, course_id=:course WHERE schedule_id=:eventId';
 
   //Prepare the statement.
   $statement = $dbh->prepare($updateCourse);
@@ -110,20 +95,14 @@ function updateCourse($campus, $eventId, $instructor, $course, $room) {
   $dbh = null;
 }
 
-function updateStartEnd($campus, $eventId, $start, $end) {
+function updateStartEnd($eventId, $start, $end) {
   //Connect to database
   $dbh = dbConnect();
   $updateStartDate = '';
 
   //Build sql update query for course start and end.
-  if($campus === 'auburn') {
-    $updateStartDate = 'UPDATE auburn_course SET start_time=:start, end_time=:end WHERE auburn_course_id=:eventId';
-  }
-  else {
-    if($campus === 'kent') {
-      $updateStartDate = 'UPDATE kent_course SET start_time=:start, end_time=:end WHERE kent_course_id=:eventId';
-    }
-  }
+
+  $updateStartDate = 'UPDATE course_schedules SET start_time=:start, end_time=:end WHERE schedule_id=:eventId';
 
   //Prepare the statement.
   $statement = $dbh->prepare($updateStartDate);

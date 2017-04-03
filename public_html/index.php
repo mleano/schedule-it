@@ -22,9 +22,17 @@ include('login/login2.php');
   <!--Nav-->
   <nav>
     <div class="nav-wrapper green darken-4">
-      <!--Logo-->
-      <a href="#" class="brand-logo left">
-        <img src="assets/imgs/logo.jpg" alt="logo" class="responsive-img" id="logo"></a>
+
+      <!--Room-->
+      <button class="btn-large waves-effect waves-light green"
+        id="filter-room" name="filter-room">by Room
+        <i class="material-icons right">business</i>
+      </button>
+      <!--Instructor-->
+      <button class="btn-large waves-effect waves-light green"
+        id="filter-instructor" name="filter-instructor">by Instructor
+        <i class="material-icons right">perm_identity</i>
+      </button>
 
       <!--Disable hamburger button if not logged in and flip login to logout when logged in-->
       <?php
@@ -57,28 +65,6 @@ include('login/login2.php');
       include('panel-modal-room.php');
     }
     ?>
-  </div>
-
-  <!--Calendar Filters-->
-  <div class="row" id="calendar-filters">
-    <!--Campus-->
-    <div class="col s12 m2 input-field">
-      <select id="filter-campus">
-        <option value="auburn">Auburn</option>
-        <option value="kent">Kent</option>
-      </select>
-      <label>Campus</label>
-    </div>
-    <!--Room-->
-    <button class="btn-large waves-effect waves-light green"
-      id="filter-room" name="filter-room">by Room
-      <i class="material-icons right">business</i>
-    </button>
-    <!--Instructor-->
-    <button class="btn-large waves-effect waves-light green"
-      id="filter-instructor" name="filter-instructor">by Instructor
-      <i class="material-icons right">perm_identity</i>
-    </button>
   </div>
 
   <div class="row valign-wrapper">

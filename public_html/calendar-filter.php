@@ -2,10 +2,9 @@
 include('../config.php');
 
 //Check if post is sent from ajax call.
-if(isset($_POST['type']) || isset($_POST['campus']) || isset($_POST['filter'])
+if(isset($_POST['type']) || isset($_POST['filter'])
 || isset($_POST['quarter']) || isset($_POST['year'])) {
   $type = $_POST['type'];
-  $campus = $_POST['campus'];
   $filter = $_POST['filter'];
   $quarter = $_POST['quarter'];
   $year = $_POST['year'];
@@ -26,15 +25,10 @@ if(isset($_POST['type']) || isset($_POST['campus']) || isset($_POST['filter'])
  * Get all scheduled courses for Auburn or Kent courses.
  */
 function selectCampusCourses() {
-  global $campus;
   global $filter;
   global $quarter;
   global $year;
 
-  // Concatenate $campus to values in statement to dynamically change between Auburn and Kent.
-  $campusCourse = $campus . '_course';
-  $campusCourseId = $campus . '_course_id';
-  // $campusCourseDay = $campus . '_course_day';
   // Dynamically change the ORDER BY value based on what filter button was clicked.
   $filterVal = '';
   if($filter === 'room') {
@@ -63,22 +57,23 @@ function selectCampusCourses() {
 
   // Create date and time range
   $startDate = mktime(0,0,0,07,$startDay,2016);
+
   $endDate = mktime(24,0,0,07,$endDay,2016);
   // Date and time format
   $startRange = date("Y-m-d\TH:i:s", $startDate);
   $endRange = date("Y-m-d\TH:i:s", $endDate);
 
   $stmt = "SELECT
-    $campusCourse.$campusCourseId,
+    course_schedules.schedule_id,
     instructor.first_name, instructor.last_name,
     course.course_number,
     room.room_number,
-    $campusCourse.start_time, $campusCourse.end_time
-    FROM $campusCourse
-    INNER JOIN instructor ON $campusCourse.instructor_id = instructor.instructor_id
-    INNER JOIN course ON $campusCourse.course_id = course.course_id
-    INNER JOIN room ON $campusCourse.room_id = room.room_id
-    WHERE $campusCourse.start_time
+    course_schedules.start_time, course_schedules.end_time
+    FROM course_schedules
+    INNER JOIN instructor ON course_schedules.instructor_id = instructor.instructor_id
+    INNER JOIN course ON course_schedules.course_id = course.course_id
+    INNER JOIN room ON course_schedules.room_id = room.room_id
+    WHERE course_schedules.start_time
     BETWEEN '$startRange'
     AND '$endRange'
     AND year = $year
@@ -91,8 +86,16 @@ function selectCampusCourses() {
 
   // Process the results.
   $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+  // echo $result;
   if(!empty($result)){
-    selectCampusCoursesResults($result, $campusCourseId);
+    // Create object class
+    $response = new stdClass();
+    // Courses field hold schedules for found courses
+    $response->courses = selectCampusCoursesResults($result);
+    // Default date will set the calendar to the correct quarter
+    $response->defaultDate = date("Y-m-d",$startDate);
+
+    echo json_encode($response);
   }else{
     echo json_encode(false);
   }
@@ -102,7 +105,7 @@ function selectCampusCourses() {
   $dbh = null;
 }
 
-function selectCampusCoursesResults($result, $id) {
+function selectCampusCoursesResults($result) {
   global $filter;
   $filterTemp = '';
   $courses = array();
@@ -110,7 +113,7 @@ function selectCampusCoursesResults($result, $id) {
 
   foreach($result as $row) {
     $course = array();
-    $course['id'] = $row[$id];
+    $course['id'] = $row['schedule_id'];
     $course['title'] = ($filter === 'room') ? $row['room_number'] : $row['first_name'] . ' ' . $row['last_name'];
     $course['courseNumber'] = $row['course_number'];
     $course['instructor'] = $row['first_name'] . ' ' . $row['last_name'];
@@ -157,8 +160,7 @@ function selectCampusCoursesResults($result, $id) {
   $courses[] = $coursesTemp;
   unset($coursesTemp);
 
-  // Output json encode of courses.
-  echo json_encode($courses);
+  return $courses;
 }
 
 ?>

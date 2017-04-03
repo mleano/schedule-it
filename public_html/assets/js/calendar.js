@@ -10,7 +10,7 @@ var el = {
 var calendar = {
   courses: '', //Courses returned from the db
   zone   : "08:00",  //Timezone
-  init   : function(calendarId) {
+  init   : function(calendarId, defaultDate) {
     let thisCalendar = $('#' + calendarId);
 
     thisCalendar.fullCalendar({
@@ -19,7 +19,7 @@ var calendar = {
       aspectRatio       : 1.35, //Default is 1.35
       contentHeight     : 'auto', //Height of the content
 
-      defaultDate       : '2016-07-18', //dates.defaultDate(),
+      defaultDate       : defaultDate, //dates.defaultDate(),
       defaultView       : 'agendaWeek', //Default view on load
       droppable         : false, //Draggable can be dropped onto calendar
       editable          : isAdminLoggedIn, //Edit calendar events
@@ -56,8 +56,7 @@ var calendar = {
             $.ajax({
               url     : 'calendar-event.php',
               type    : 'POST',
-              data    : 'type=deleteCourse&campus=' + courses.campus +
-              '&eventId=' + event.id,
+              data    : 'type=deleteCourse&eventId=' + event.id,
               dataType: 'json',
               success : function(response) {
                 if(response.status == 'success') {
@@ -87,15 +86,13 @@ var calendar = {
             $.ajax({
               url     : 'calendar-event.php',
               type    : 'POST',
-              data    : 'type=updateCourse&campus=' + courses.campus +
-              '&eventId=' + event.id + '&instructor=' + instructorSelect +
+              data    : 'type=updateCourse&eventId=' + event.id + '&instructor=' + instructorSelect +
               '&room=' + roomSelect + '&course=' + courseSelect,
               dataType: 'json',
               success : function(response) {
                 if(response.status == 'success') {
                   //On successful update from db, update calendar.
-                  courses.selectCampusCourses(courses.campus,
-                    courses.filterClick);
+                  courses.selectCampusCourses(courses.filterClick,courses.quarter, courses.year);
                 }
               },
               error   : function(error) {
@@ -112,8 +109,7 @@ var calendar = {
         $.ajax({
           url     : 'calendar-event.php',
           type    : 'POST',
-          data    : 'type=updateStartEnd&campus=' + courses.campus +
-          '&eventId=' + event.id + '&start=' + start + '&end=' + end,
+          data    : 'type=updateStartEnd&eventId=' + event.id + '&start=' + start + '&end=' + end,
           dataType: 'json',
           success : function(response) {
             if(response.status != 'success') {
@@ -145,8 +141,7 @@ var calendar = {
         $.ajax({
           url     : 'calendar-event.php',
           type    : 'POST',
-          data    : 'type=updateStartEnd&campus=' + courses.campus +
-          '&eventId=' + event.id + '&start=' + start + '&end=' + end,
+          data    : 'type=updateStartEnd&eventId=' + event.id + '&start=' + start + '&end=' + end,
           dataType: 'json',
           success : function(response) {
             if(response.status != 'success') {
@@ -172,7 +167,7 @@ var calendar = {
       scrollTime        : "08:00:00", //Scroll start
       slotDuration      : '00:30:00', //Duration of each slot on week/day view
       slotEventOverlap  : false, //Overlap slot
-      snapDuration      : '00:10:00', //Duration of each snap
+      snapDuration      : '00:05:00', //Duration of each snap
       titleFormat       : '[]',
       theme             : true, //Calendar theme
       utc               : true, //Store event timezone info and display in UTC
@@ -198,22 +193,28 @@ var calendar = {
 
 //Ajax calls to PHP file that get courses data from MySql queries.
 var courses = {
-  campus             : '',
-  filterClick        : '',
+  quarter             : '',
+  year                : '',
+  filterClick         : '',
+  // Search by room or instructor
   searchBy           : '',
   //Display Auburn or Kent courses by room or instructor.
-  selectCampusCourses: function(campus, filter,quarter, year) {
+  selectCampusCourses: function(filter,quarter, year) {
     $.ajax({
       url    : 'calendar-filter.php',
       type   : 'POST', //Send post data
-      data   : 'type=selectCampusCourses&campus=' + campus + '&filter=' +
-      filter+'&quarter='+quarter+'&year='+year,
-      success: function(courses) {
-        // Loads only when data returns from query
-        if(courses != "false"){
-          //Parse json encode returned from PHP.
-          let filteredCourses = JSON.parse(courses);
+      data   : 'type=selectCampusCourses&filter=' +
+      filter+'&quarter='+courses.quarter+'&year='+courses.year,
+      success: function(result) {
+        console.log(result);
 
+
+        // Loads only when data returns from query
+        if(result != "false"){
+          //Parse json encode returned from PHP.
+          let parsedResult = JSON.parse(result);
+
+          let filteredCourses = parsedResult.courses;
           //Iterate through filtered courses.
           for(let i = 0; i < filteredCourses.length; i++) {
             //Set one array of course objects filtered by room or instructor.
@@ -244,7 +245,7 @@ var courses = {
               );
 
               //Initialize the calendar with generated calendar id.
-              calendar.init(el.calendarId);
+              calendar.init(el.calendarId, parsedResult.defaultDate);
             }
             //After initialization of calendars, only update data by removing
             // old data and re-rendering new data based on users filter input.
@@ -287,9 +288,9 @@ $(document).ready(function() {
   //Retrieve current month and year
   var today = new Date();
   // Create quarter based on month
-  var quarter = Math.floor((today.getMonth() + 3) / 3);
+  courses.quarter = Math.floor((today.getMonth() + 3) / 3);
 
-  var year = today.getFullYear();
+  courses.year = today.getFullYear();
   var seasons = {
     1:"Winter",
     2:"Spring",
@@ -297,39 +298,36 @@ $(document).ready(function() {
     4:"Fall"
   };
 
-  $('#displayQuarter').text(seasons[quarter]+ " "+ year);
+  $('#displayQuarter').text(seasons[courses.quarter]+ " "+ courses.year);
 
   // Default view when access index
-  courses.campus = 'auburn';
   courses.searchBy = 'room';
-  courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
+  courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
 
 
   //Filter calendar by clicking the room or instructor button.
   el.filterRI.click(function() {
-    //Get campus from select input value.
-    courses.campus = el.filterC.find("option:selected").val();
 
     //If BY ROOM button is clicked.
     if(this.id == 'filter-room') {
       courses.filterClick = 'room';
       courses.searchBy = 'room';
-      courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
+      courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
     }
     //If BY INSTRUCTOR button is clicked.
     else if(this.id == 'filter-instructor') {
       courses.filterClick = 'instructor';
       courses.searchBy = 'instructor';
-      courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
+      courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
     }
     // Click event that changes to previous quarter
     else if(this.id == 'prev-quarter'){
       // Condition change year and quarter if increments past fourth quarter
-      if(quarter <= 1){
-        quarter = 4;
-        year--;
+      if(courses.quarter <= 1){
+        courses.quarter = 4;
+        courses.year--;
       }else{
-        quarter--;
+        courses.quarter--;
       }
 
       // Removes all previous calendars
@@ -339,18 +337,18 @@ $(document).ready(function() {
       });
 
       // Change header
-      $('#displayQuarter').text(seasons[quarter]+ " "+ year);
+      $('#displayQuarter').text(seasons[courses.quarter]+ " "+ courses.year);
       // Update courses
-      courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
+      courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
     }
     // Click event that changes to next quarter
     else if(this.id == 'next-quarter'){
       // Condition change year and quarter if increments past fourth quarter
-      if(quarter >= 4){
-        quarter = 1;
-        year++;
+      if(courses.quarter >= 4){
+        courses.quarter = 1;
+        courses.year++;
       }else{
-        quarter++;
+        courses.quarter++;
       }
 
       // Removes all previous calendars
@@ -358,11 +356,11 @@ $(document).ready(function() {
         //Remove calendars from previous entry
         $(this).remove();
       });
-      
+
       // Change header
-      $('#displayQuarter').text(seasons[quarter]+ " "+ year);
+      $('#displayQuarter').text(seasons[courses.quarter]+ " "+ courses.year);
       // Update courses
-      courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
+      courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
     }
   });
 });

@@ -229,7 +229,7 @@ var courseForm = {
 
   },
   submit      : function() {
-    let campus       = $('#select-campus option:selected').val();
+
     let quarter      = $('#select-quarter-season option:selected').val();
     let year         = $('#select-quarter-year option:selected').val();
     let instructor   = $('#select-instructor option:selected').val();
@@ -340,14 +340,14 @@ var courseForm = {
       });
     }
 
-    courseForm.insertCourse(campus, instructor, course, room, courseDays,year);
+    courseForm.insertCourse(instructor, course, room, courseDays, year);
   },
-  insertCourse: function(campus, instructor, course, room, courseDays, year) {
+  insertCourse: function(instructor, course, room, courseDays, year) {
+    alert(courseDays);
     $.ajax({
       url     : 'panel-form.php',
       type    : 'POST',
       data    : 'type=insertCourse' +
-      '&campus=' + campus +
       '&instructor=' + instructor +
       '&course=' + course +
       '&room=' + room +
@@ -355,31 +355,16 @@ var courseForm = {
       '&year=' + year,
       dataType: 'json',
       success : function(response) {
-        //Get the campus where the course was just inserted from the response.
-        let responseCampus = response.campus;
-
-        //Based on campus and what filter has been clicked, if any, call
         // courses.selectCampusCourses and reload new course data into calendar.
-        if(responseCampus === 'auburn') {
-          if(courses.filterClick === 'room') {
-            courses.filterClick = 'room';
-            courses.selectCampusCourses(responseCampus, 'room');
-          }
-          if(courses.filterClick === 'instructor') {
-            courses.filterClick = 'instructor';
-            courses.selectCampusCourses(responseCampus, 'instructor')
-          }
+        if(courses.filterClick === 'room') {
+          courses.searchBy = 'room';
+          courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
         }
-        else if(responseCampus === 'kent') {
-          if(courses.filterClick === 'room') {
-            courses.filterClick = 'room';
-            courses.selectCampusCourses(responseCampus, 'room')
-          }
-          if(courses.filterClick === 'instructor') {
-            courses.filterClick = 'instructor';
-            courses.selectCampusCourses(responseCampus, 'instructor')
-          }
+        if(courses.filterClick === 'instructor') {
+          courses.searchBy = 'instructor';
+          courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
         }
+
       },
       error   : function(error) {
         console.log(error);

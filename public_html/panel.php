@@ -5,14 +5,6 @@ if(isset($_SESSION['username'])) { ?>
   <div class="row">
     <!--<form id="course-form" method="post">-->
     <div class="row">
-      <!--Campus-->
-      <div class="input-field col s4">
-        <select id="select-campus" required>
-          <option value="auburn">Auburn</option>
-          <option value="kent">Kent</option>
-        </select>
-        <label for="select-campus">Campus</label>
-      </div>
       <!--Quarter-->
       <!--Season-->
       <div class="input-field col s4">

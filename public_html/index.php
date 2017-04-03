@@ -25,7 +25,7 @@ include('login/login2.php');
       <!--Logo-->
       <a href="#" class="brand-logo left">
         <img src="assets/imgs/logo.jpg" alt="logo" class="responsive-img" id="logo"></a>
-      
+
       <!--Disable hamburger button if not logged in and flip login to logout when logged in-->
       <?php
       if(isset($_SESSION['username'])) {
@@ -79,6 +79,20 @@ include('login/login2.php');
       id="filter-instructor" name="filter-instructor">by Instructor
       <i class="material-icons right">perm_identity</i>
     </button>
+  </div>
+
+  <div class="row valign-wrapper">
+    <div class="col s12 m6 offset-m3">
+    <button class="col s1 m2 valign btn-large waves-effect waves-light green"
+      id="prev-quarter" name="prev-quarter"><i class="material-icons left">keyboard_arrow_left</i>Prev
+    </button>
+    <h2 id="displayQuarter" class="col s10 m8 valign center-align">
+      Insert Quarter
+    </h2>
+    <button class="col s1 m2 valign btn-large waves-effect waves-light green"
+      id="next-quarter" name="next-quarter"><i class="material-icons right">keyboard_arrow_right</i>Next
+    </button>
+  </div>
   </div>
 
   <div class="divider"></div>

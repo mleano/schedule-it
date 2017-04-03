@@ -1,0 +1,11 @@
+[31-Mar-2017 14:53:51 America/Chicago] PHP Warning:  include(../../db.php): failed to open stream: No such file or directory in /home/caseym/public_html/schedule_it2/public_html/login/login2.php on line 14
+[31-Mar-2017 14:53:51 America/Chicago] PHP Warning:  include(): Failed opening '../../db.php' for inclusion (include_path='.:/opt/php70/lib/php') in /home/caseym/public_html/schedule_it2/public_html/login/login2.php on line 14
+[31-Mar-2017 14:53:51 America/Chicago] PHP Warning:  mysqli_real_escape_string() expects parameter 1 to be mysqli, null given in /home/caseym/public_html/schedule_it2/public_html/login/loginfunction.php on line 35
+[31-Mar-2017 14:53:51 America/Chicago] PHP Warning:  mysqli_real_escape_string() expects parameter 1 to be mysqli, null given in /home/caseym/public_html/schedule_it2/public_html/login/loginfunction.php on line 44
+[31-Mar-2017 14:53:51 America/Chicago] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, null given in /home/caseym/public_html/schedule_it2/public_html/login/loginfunction.php on line 55
+[31-Mar-2017 14:53:51 America/Chicago] PHP Warning:  mysqli_close() expects parameter 1 to be mysqli, null given in /home/caseym/public_html/schedule_it2/public_html/login/login2.php on line 36
+[03-Apr-2017 03:01:52 America/Chicago] PHP Parse error:  syntax error, unexpected ''.$startRange.'' (T_CONSTANT_ENCAPSED_STRING) in /home/caseym/public_html/schedule_it2/public_html/calendar-filter.php on line 79
+[03-Apr-2017 03:30:18 America/Chicago] PHP Parse error:  syntax error, unexpected ''".$startRange."'' (T_CONSTANT_ENCAPSED_STRING) in /home/caseym/public_html/schedule_it2/public_html/calendar-filter.php on line 81
+[03-Apr-2017 03:31:23 America/Chicago] PHP Parse error:  syntax error, unexpected ''".$endRange."'' (T_CONSTANT_ENCAPSED_STRING) in /home/caseym/public_html/schedule_it2/public_html/calendar-filter.php on line 82
+[03-Apr-2017 03:32:29 America/Chicago] PHP Parse error:  syntax error, unexpected ''.$startRange.'' (T_CONSTANT_ENCAPSED_STRING) in /home/caseym/public_html/schedule_it2/public_html/calendar-filter.php on line 81
+[03-Apr-2017 03:33:00 America/Chicago] PHP Parse error:  syntax error, unexpected '$startRange' (T_VARIABLE) in /home/caseym/public_html/schedule_it2/public_html/calendar-filter.php on line 81

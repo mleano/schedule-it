@@ -2,6 +2,7 @@ $(document).ready(function() {
   //Materialize
   //Calendar
   //Select
+
   $('select').material_select();
 
   //Nav

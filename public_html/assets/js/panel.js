@@ -217,6 +217,17 @@ var courseForm = {
       $('#select-quarter-year').material_select();
     }
   },
+  covertQtrDayToDate: function(quarter, day){
+    var seasons = {
+      "winter": {"id":1,"monday": 4,"tuesday": 5, "wednesday": 6, "thursday": 7, "friday": 8},
+      "spring": {"id":2,"monday": 11,"tuesday": 12, "wednesday": 13, "thursday": 14, "friday": 15},
+      "summer": {"id":3,"monday": 18,"tuesday": 19, "wednesday": 20, "thursday": 21, "friday": 22},
+      "fall": {"id":4,"monday": 25,"tuesday": 26, "wednesday": 27, "thursday": 28, "friday": 29}
+    };
+
+    return seasons[quarter][day];
+
+  },
   submit      : function() {
     let campus       = $('#select-campus option:selected').val();
     let quarter      = $('#select-quarter-season option:selected').val();
@@ -251,6 +262,7 @@ var courseForm = {
       $.each($('#' + currentDayId + ' option:selected'), function() {
         //Set the day(s), start time, and end time option selected value.
         let optionValue = $(this).val();
+        let date = courseForm.covertQtrDayToDate(quarter,optionValue);
 
         //If the day id changes reset previousDayId, start and end time.
         if(!previousDayId) {
@@ -264,16 +276,15 @@ var courseForm = {
           selectEndMinute   = $(
             '#' + currentDayId + ' .select-end-minute option:selected').val();
         }
-
         //Refactor this code when working on the quarter date (duplications).
         // This only works for one quarter.
         if(previousDayId === currentDayId) {
           if(optionValue === 'monday') {
             //Set the start time and end time for each day.
             startTime =
-              '2016-07-18T' + selectStartHour + ':' + selectStartMinute + ':00';
+              '2016-07-'+date+'T' + selectStartHour + ':' + selectStartMinute + ':00';
             endTime   =
-              '2016-07-18T' + selectEndHour + ':' + selectEndMinute + ':00';
+              '2016-07-'+date+'T' + selectEndHour + ':' + selectEndMinute + ':00';
             //Add the start and end time to startEndTime array temporarily.
             startEndTime.push(startTime);
             startEndTime.push(endTime);
@@ -284,9 +295,9 @@ var courseForm = {
           }
           else if(optionValue === 'tuesday') {
             startTime =
-              '2016-07-19T' + selectStartHour + ':' + selectStartMinute + ':00';
+              '2016-07-'+date+'T' + selectStartHour + ':' + selectStartMinute + ':00';
             endTime   =
-              '2016-07-19T' + selectEndHour + ':' + selectEndMinute + ':00';
+              '2016-07-'+date+'T' + selectEndHour + ':' + selectEndMinute + ':00';
             startEndTime.push(startTime);
             startEndTime.push(endTime);
             courseDays.push(startEndTime);
@@ -294,9 +305,9 @@ var courseForm = {
           }
           else if(optionValue === 'wednesday') {
             startTime =
-              '2016-07-20T' + selectStartHour + ':' + selectStartMinute + ':00';
+              '2016-07-'+date+'T' + selectStartHour + ':' + selectStartMinute + ':00';
             endTime   =
-              '2016-07-20T' + selectEndHour + ':' + selectEndMinute + ':00';
+              '2016-07-'+date+'T' + selectEndHour + ':' + selectEndMinute + ':00';
             startEndTime.push(startTime);
             startEndTime.push(endTime);
             courseDays.push(startEndTime);
@@ -304,9 +315,9 @@ var courseForm = {
           }
           else if(optionValue === 'thursday') {
             startTime =
-              '2016-07-21T' + selectStartHour + ':' + selectStartMinute + ':00';
+              '2016-07-'+date+'T' + selectStartHour + ':' + selectStartMinute + ':00';
             endTime   =
-              '2016-07-21T' + selectEndHour + ':' + selectEndMinute + ':00';
+              '2016-07-'+date+'T' + selectEndHour + ':' + selectEndMinute + ':00';
             startEndTime.push(startTime);
             startEndTime.push(endTime);
             courseDays.push(startEndTime);
@@ -314,9 +325,9 @@ var courseForm = {
           }
           else if(optionValue === 'friday') {
             startTime =
-              '2016-07-22T' + selectStartHour + ':' + selectStartMinute + ':00';
+              '2016-07-'+date+'T' + selectStartHour + ':' + selectStartMinute + ':00';
             endTime   =
-              '2016-07-22T' + selectEndHour + ':' + selectEndMinute + ':00';
+              '2016-07-'+date+'T' + selectEndHour + ':' + selectEndMinute + ':00';
             startEndTime.push(startTime);
             startEndTime.push(endTime);
             courseDays.push(startEndTime);
@@ -329,9 +340,9 @@ var courseForm = {
       });
     }
 
-    courseForm.insertCourse(campus, instructor, course, room, courseDays);
+    courseForm.insertCourse(campus, instructor, course, room, courseDays,year);
   },
-  insertCourse: function(campus, instructor, course, room, courseDays) {
+  insertCourse: function(campus, instructor, course, room, courseDays, year) {
     $.ajax({
       url     : 'panel-form.php',
       type    : 'POST',
@@ -340,7 +351,8 @@ var courseForm = {
       '&instructor=' + instructor +
       '&course=' + course +
       '&room=' + room +
-      '&courseDays=' + JSON.stringify(courseDays), //Stringify array before pass
+      '&courseDays=' + JSON.stringify(courseDays)+//Stringify array before pass
+      '&year=' + year,
       dataType: 'json',
       success : function(response) {
         //Get the campus where the course was just inserted from the response.

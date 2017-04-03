@@ -2,7 +2,7 @@
 var el = {
   calendars : $("#calendars"),
   calendarId: '',
-  filterRI  : $('#filter-room, #filter-instructor'),
+  filterRI  : $('#filter-room, #filter-instructor, #next-quarter, #prev-quarter'),
   filterC   : $("#filter-campus")
 };
 
@@ -18,22 +18,7 @@ var calendar = {
       allDayText        : false, //All day slot text
       aspectRatio       : 1.35, //Default is 1.35
       contentHeight     : 'auto', //Height of the content
-      customButtons     : {
-        prevQtr: { //Previous quarter button
-          themeIcon: 'circle-triangle-w',
-          click    : function() {
-            thisCalendar.fullCalendar('incrementDate',
-              moment.duration(-7, 'days'));
-          }
-        },
-        nextQtr: { //Next quarter button
-          themeIcon: 'circle-triangle-e',
-          click    : function() {
-            thisCalendar.fullCalendar('incrementDate',
-              moment.duration(7, 'days'));
-          }
-        }
-      },
+
       defaultDate       : '2016-07-18', //dates.defaultDate(),
       defaultView       : 'agendaWeek', //Default view on load
       droppable         : false, //Draggable can be dropped onto calendar
@@ -215,75 +200,79 @@ var calendar = {
 var courses = {
   campus             : '',
   filterClick        : '',
+  searchBy           : '',
   //Display Auburn or Kent courses by room or instructor.
-  selectCampusCourses: function(campus, filter) {
+  selectCampusCourses: function(campus, filter,quarter, year) {
     $.ajax({
       url    : 'calendar-filter.php',
       type   : 'POST', //Send post data
       data   : 'type=selectCampusCourses&campus=' + campus + '&filter=' +
-      filter,
+      filter+'&quarter='+quarter+'&year='+year,
       success: function(courses) {
-        //Parse json encode returned from PHP.
-        let filteredCourses = JSON.parse(courses);
+        // Loads only when data returns from query
+        if(courses != "false"){
+          //Parse json encode returned from PHP.
+          let filteredCourses = JSON.parse(courses);
 
-        //Iterate through filtered courses.
-        for(let i = 0; i < filteredCourses.length; i++) {
-          //Set one array of course objects filtered by room or instructor.
-          calendar.courses = filteredCourses[i];
+          //Iterate through filtered courses.
+          for(let i = 0; i < filteredCourses.length; i++) {
+            //Set one array of course objects filtered by room or instructor.
+            calendar.courses = filteredCourses[i];
 
-          //Dynamically generate the calendar div id.
-          el.calendarId = 'calendar--' + i;
+            //Dynamically generate the calendar div id.
+            el.calendarId = 'calendar--' + i;
 
-          //Check if calendar div already exists, if false append new calendar.
-          if(!document.getElementById(el.calendarId)) {
-            //Dynamically generate title and divs for each calendar with the
-            // previous el.calendarId. Each calendar must have its own div
-            // with a unique id, then each calendar will append inside the
-            // calendars div when the calendar is initialized with javascript.
-            el.calendars.append(
-              '<div class="calendar-card col s12" id="calendar-card--' + i +
-              '">' +
-              '<div class="card clearfix">' +
-              '<div class="card-content green white-text">' +
-              '<span  class="calendar-title card-title" ' +
-              'id=calendar-title' + i + '>' + calendar.courses[0].title +
-              '</span>' +
-              '<div id="' + el.calendarId +
-              '" class="col s12 calendar"></div>' +
-              '</div>' +
-              '</div>' +
-              '</div>'
-            );
+            //Check if calendar div already exists, if false append new calendar.
+            if(!document.getElementById(el.calendarId)) {
+              //Dynamically generate title and divs for each calendar with the
+              // previous el.calendarId. Each calendar must have its own div
+              // with a unique id, then each calendar will append inside the
+              // calendars div when the calendar is initialized with javascript.
+              el.calendars.append(
+                '<div class="calendar-card col s12" id="calendar-card--' + i +
+                '">' +
+                '<div class="card clearfix">' +
+                '<div class="card-content green white-text">' +
+                '<span  class="calendar-title card-title" ' +
+                'id=calendar-title' + i + '>' + calendar.courses[0].title +
+                '</span>' +
+                '<div id="' + el.calendarId +
+                '" class="col s12 calendar"></div>' +
+                '</div>' +
+                '</div>' +
+                '</div>'
+              );
 
-            //Initialize the calendar with generated calendar id.
-            calendar.init(el.calendarId);
-          }
-          //After initialization of calendars, only update data by removing
-          // old data and re-rendering new data based on users filter input.
-          else {
-            //Dynamically change title by room number or instructors last name.
-            $('#calendar-title' + i).text(calendar.courses[0].title);
+              //Initialize the calendar with generated calendar id.
+              calendar.init(el.calendarId);
+            }
+            //After initialization of calendars, only update data by removing
+            // old data and re-rendering new data based on users filter input.
+            else {
+              //Dynamically change title by room number or instructors last name.
+              $('#calendar-title' + i).text(calendar.courses[0].title);
 
-            //Get current calendar div by setting id.
-            let thisCalendarId = $('#' + el.calendarId);
+              //Get current calendar div by setting id.
+              let thisCalendarId = $('#' + el.calendarId);
 
-            //Remove calendar courses from previous filtering.
-            thisCalendarId.fullCalendar('removeEvents');
-            //Reload changes for current filtering.
-            thisCalendarId.fullCalendar('addEventSource', filteredCourses[i]);
+              //Remove calendar courses from previous filtering.
+              thisCalendarId.fullCalendar('removeEvents');
+              //Reload changes for current filtering.
+              thisCalendarId.fullCalendar('addEventSource', filteredCourses[i]);
 
-            //Remove additional calendars from the previous filtering if there
-            // are more than the current filtering. Because the calendar objects
-            // are being reused, the additional ones will show at the bottom.
-            //Iterate through all select inputs that exist.
-            $.each($('[id^="calendar-card--"]'), function(index) {
-              //If calendar count is greater than filteredCourses count, remove.
-              //Index keeps track of the number of calendar cards existing.
-              if((index + 1) > filteredCourses.length) {
-                //Remove additional calendars from previous filtering.
-                $(this).remove();
-              }
-            });
+              //Remove additional calendars from the previous filtering if there
+              // are more than the current filtering. Because the calendar objects
+              // are being reused, the additional ones will show at the bottom.
+              //Iterate through all select inputs that exist.
+              $.each($('[id^="calendar-card--"]'), function(index) {
+                //If calendar count is greater than filteredCourses count, remove.
+                //Index keeps track of the number of calendar cards existing.
+                if((index + 1) > filteredCourses.length) {
+                  //Remove additional calendars from previous filtering.
+                  $(this).remove();
+                }
+              });
+            }
           }
         }
       },
@@ -295,6 +284,27 @@ var courses = {
 };
 
 $(document).ready(function() {
+  //Retrieve current month and year
+  var today = new Date();
+  // Create quarter based on month
+  var quarter = Math.floor((today.getMonth() + 3) / 3);
+
+  var year = today.getFullYear();
+  var seasons = {
+    1:"Winter",
+    2:"Spring",
+    3:"Summer",
+    4:"Fall"
+  };
+
+  $('#displayQuarter').text(seasons[quarter]+ " "+ year);
+
+  // Default view when access index
+  courses.campus = 'auburn';
+  courses.searchBy = 'room';
+  courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
+
+
   //Filter calendar by clicking the room or instructor button.
   el.filterRI.click(function() {
     //Get campus from select input value.
@@ -303,12 +313,56 @@ $(document).ready(function() {
     //If BY ROOM button is clicked.
     if(this.id == 'filter-room') {
       courses.filterClick = 'room';
-      courses.selectCampusCourses(courses.campus, 'room');
+      courses.searchBy = 'room';
+      courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
     }
     //If BY INSTRUCTOR button is clicked.
     else if(this.id == 'filter-instructor') {
       courses.filterClick = 'instructor';
-      courses.selectCampusCourses(courses.campus, 'instructor')
+      courses.searchBy = 'instructor';
+      courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
+    }
+    // Click event that changes to previous quarter
+    else if(this.id == 'prev-quarter'){
+      // Condition change year and quarter if increments past fourth quarter
+      if(quarter <= 1){
+        quarter = 4;
+        year--;
+      }else{
+        quarter--;
+      }
+
+      // Removes all previous calendars
+      $.each($('[id^="calendar-card--"]'), function(index) {
+        //Remove calendars from previous entry
+        $(this).remove();
+      });
+
+      // Change header
+      $('#displayQuarter').text(seasons[quarter]+ " "+ year);
+      // Update courses
+      courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
+    }
+    // Click event that changes to next quarter
+    else if(this.id == 'next-quarter'){
+      // Condition change year and quarter if increments past fourth quarter
+      if(quarter >= 4){
+        quarter = 1;
+        year++;
+      }else{
+        quarter++;
+      }
+
+      // Removes all previous calendars
+      $.each($('[id^="calendar-card--"]'), function(index) {
+        //Remove calendars from previous entry
+        $(this).remove();
+      });
+      
+      // Change header
+      $('#displayQuarter').text(seasons[quarter]+ " "+ year);
+      // Update courses
+      courses.selectCampusCourses(courses.campus, courses.searchBy, quarter, year);
     }
   });
 });

@@ -22,7 +22,7 @@ function displayAllInstructors()
     $dbh = dbConnect();
 
 //queries
-    $sql = "SELECT * FROM instructor ORDER BY last_name ASC";
+    $sql = "SELECT * FROM instructors ORDER BY last_name ASC";
 
 
 //lets prepare the queries
@@ -99,8 +99,3 @@ function displayAllRooms()
 }
 
 echo json_encode(array($instructorArray, $courseArray, $rooms));
-
-
-
-
-

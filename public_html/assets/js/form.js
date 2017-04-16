@@ -35,6 +35,7 @@ function delete_instructor(id) {
       data    : 'type=deleteInstructor&id=' + id,
       dataType: 'json',
       success : function(response) {
+        alert(response);
 
         if(response.status == 'success') {
 

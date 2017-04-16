@@ -111,7 +111,7 @@ function dbQuery($sql, $first_name, $last_name) {
 }
 
 function addInstructor($first_name, $last_name) {
-  $sql = "INSERT INTO `instructor` (`instructor_id`, `first_name`, `last_name`) VALUES (NULL, '$first_name', '$last_name')";
+  $sql = "INSERT INTO `instructors` (`instructor_id`, `first_name`, `last_name`) VALUES (NULL, '$first_name', '$last_name')";
 
   dbQuery($sql, $first_name, $last_name);
 }

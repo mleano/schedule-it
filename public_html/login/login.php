@@ -27,6 +27,7 @@
             type="submit" name="send" id="send">Login
           </button>
         </div>
+        <?php if(isset($_SESSION['loginError'])){echo '<div><span>User name or password not valid. Please try again!</span></div>';}?>
       </form>
     </div>
   </div>

@@ -34,33 +34,47 @@ switch($type) {
 }
 
 function deleteCourse($eventId) {
-  //Connect to database
-  $dbh = dbConnect();
-  $deleteCourse = '';
+  //Filter eventId
+  if (!filter_var($eventId, FILTER_VALIDATE_INT) === false) {
+    //Connect to database
+    $dbh = dbConnect();
+    $deleteCourse = '';
 
-  //Build sql update query for instructor, course, room.
+    // Find block_schedule_id based on event id
+    $select = "SELECT block_id FROM course_schedules WHERE schedule_id = '".$eventId."'";
+    $statement = $dbh->prepare($select);
+    $statement->execute();
 
-  $deleteCourse = 'DELETE FROM course_schedules WHERE schedule_id=:eventId';
+    // Process the results.
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-  //Prepare the statement.
-  $statement = $dbh->prepare($deleteCourse);
-  //Bind the parameters
-  $statement->bindParam(':eventId', $eventId, PDO::PARAM_STR);
+    $block_id = (int)$result['block_id'];
 
-  //Execute campus course.
-  $delete = $statement->execute();
 
-  if($delete) {
-    //Return the id and campus in the success response.
-    echo json_encode(array('status' => 'success'));
+    // Used block_id returned to delete all instances of course schedules from that block
+    $deleteCourse = "DELETE FROM block_schedules WHERE block_id = :blockId";
+
+    //Prepare the statement.
+    $statement = $dbh->prepare($deleteCourse);
+    //Bind the parameters
+    $statement->bindParam(':blockId', $block_id, PDO::PARAM_INT);
+
+    //Execute campus course.
+    $delete = $statement->execute();
+
+    if($delete) {
+      //Return the id and campus in the success response.
+      echo json_encode(array('status' => 'success'));
+    }
+    else {
+      //Return the id and campus in the success response.
+      echo json_encode(array('status' => 'failed'));
+    }
+    //Close the connection
+    $dbh = null;
+
   }
-  else {
-    //Return the id and campus in the success response.
-    echo json_encode(array('status' => 'failed'));
-  }
 
-  //Close the connection
-  $dbh = null;
 }
 
 function updateCourse($scheduleId, $instructor, $course, $room) {

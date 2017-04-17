@@ -66,11 +66,16 @@ var calendar = {
                       return event === eventDelete;
                     });
                 }
+
               },
               error   : function(error) {
                 alert('Couldn\'t delete course: ' + error.responseText);
               }
             });
+
+            //Close modal to update course.
+            $('#calendar-update-course').closeModal();
+            courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
           });
 
           //Update course
@@ -99,6 +104,9 @@ var calendar = {
                 alert('Couldn\'t update course: ' + error.responseText);
               }
             });
+            //Close modal to update course.
+            $('#calendar-update-course').closeModal();
+            courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
           });
         }
       },

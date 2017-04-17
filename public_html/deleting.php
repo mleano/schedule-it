@@ -6,7 +6,8 @@
  * Time: 4:50 PM
  */
 include('../config.php');
-include('Model/InstructorService.php');
+include('Model/Instructor/InstructorService.php');
+require('Model/Instructor/InstructorMapperMySQL.php');
 
 if (isset($_POST['id']) || isset($_POST['type'])) {
     $id = $_POST['id'];
@@ -18,7 +19,7 @@ switch ($type) {
         deleteCourse($id);
         break;
     case 'deleteInstructor' :
-        $instructorService = new InstructorService();
+        $instructorService = new InstructorService(new InstructorMapperMySQL());
         $status = $InstructorService->deleteInstructor($id);
         return $status;
         //deleteInstructor($id);

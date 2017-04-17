@@ -1,0 +1,26 @@
+[16-Apr-2017 20:23:16 America/Chicago] PHP Parse error:  syntax error, unexpected '$private' (T_VARIABLE), expecting function (T_FUNCTION) in /home/caseym/public_html/schedule_it2/public_html/Model/Instructor/InstructorService.php on line 6
+[16-Apr-2017 22:52:20 America/Chicago] PHP Fatal error:  Uncaught Error: Call to undefined method PDOStatement::result() in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php:47
+Stack trace:
+#0 /home/caseym/public_html/schedule_it2/public_html/calendar-event.php(30): deleteCourse('200')
+#1 {main}
+  thrown in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php on line 47
+[16-Apr-2017 22:54:37 America/Chicago] PHP Fatal error:  Uncaught Error: Call to undefined method PDOStatement::result() in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php:47
+Stack trace:
+#0 /home/caseym/public_html/schedule_it2/public_html/calendar-event.php(30): deleteCourse('200')
+#1 {main}
+  thrown in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php on line 47
+[16-Apr-2017 23:01:37 America/Chicago] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php:45
+Stack trace:
+#0 /home/caseym/public_html/schedule_it2/public_html/calendar-event.php(30): deleteCourse('200')
+#1 {main}
+  thrown in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php on line 45
+[16-Apr-2017 23:05:05 America/Chicago] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php:45
+Stack trace:
+#0 /home/caseym/public_html/schedule_it2/public_html/calendar-event.php(30): deleteCourse('200')
+#1 {main}
+  thrown in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php on line 45
+[16-Apr-2017 23:06:38 America/Chicago] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php:45
+Stack trace:
+#0 /home/caseym/public_html/schedule_it2/public_html/calendar-event.php(30): deleteCourse('200')
+#1 {main}
+  thrown in /home/caseym/public_html/schedule_it2/public_html/calendar-event.php on line 45

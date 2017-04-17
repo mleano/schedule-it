@@ -98,6 +98,7 @@ include('login/login2.php');
     </script>
   <?php } ?>
 
+
   <!--Scripts-->
   <script rel="text/javascript" src="assets/lib/jquery/jquery-3.0.0.min.js"></script>
   <script rel="text/javascript" src="assets/lib/fullcalendar/lib/moment.min.js"></script>
@@ -107,5 +108,12 @@ include('login/login2.php');
   <script rel="text/javascript" src="assets/js/panel.js"></script>
   <script rel="text/javascript" src="assets/js/calendar.js"></script>
   <script rel="text/javascript" src="assets/js/form.js"></script>
+
+  <!-- Triggers modal to open when page reloads with invalid login info -->
+  <?php if(isset($_SESSION['loginError'])){ ?>
+    <script type="text/javascript">
+      $('#login-modal').openModal();
+    </script>
+  <?php }?>
 </body>
 </html>

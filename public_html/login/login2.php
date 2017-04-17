@@ -5,10 +5,14 @@
 // Two included files are necessary.
 // Send NOTHING to the Web browser prior to the setcookie() lines!
 
+// Unset any previous errors
+unset($_SESSION['loginError']);
+
 // Check if the form has been submitted:
 if(isset($_POST['user']) || isset($_POST['pass'])) {
   // For processing the login:
   include('loginfunction.php');
+
 
   // Need the database connection:
   include('../db.php');
@@ -24,13 +28,11 @@ if(isset($_POST['user']) || isset($_POST['pass'])) {
     setcookie('user', $user);
     //set sessions
     $_SESSION['username'] = $user;
-    // Redirect:
-    redirect_user('index.php');
 
   }
   else { // Unsuccessful!
     // Assign $data to $errors for error reporting.
-    $errors = $data;
+    $_SESSION['loginError'] = check_login($cnxn, $user, $pass);
   }
 
   mysqli_close($cnxn); // Close the database connection.

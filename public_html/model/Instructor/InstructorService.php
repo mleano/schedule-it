@@ -1,23 +1,26 @@
 <?php
   require('Instructor.php');
-  require('InstructorMapperMySQL.php');
 
   class InstructorService {
-    // TODO: JCM Create field to store repository mapper updateStartEnd
+    // Stores mapper being used
+    $private storageType;
 
-    // TODO: JCM Create constructor to initialize Mapper
+    // Intializes the type of mapper used for storing data
+    function __construct($newStorageType){
+      $this->storageType = $newStorageType;
+    }
 
     /* Takes first and last name  adds data to instructor table and creates an object based on data table */
     public function addInstructor($firstName, $lastName){
       $instructor = new Instructor();
-      $mapper = new InstructorMapperMySQL();
+      $mapper = $this->storageType;
       $instructor = $mapper->addByName($instructor, $firstName, $lastName);
       return $instructor;
     }
 
-    public function deleteInstructor(Instructor $instructor){
+    public function deleteInstructor($id){
       $mapper = new InstructorMapperMySQL();
-      $mapper->removeById($instructor->id);
+      $mapper->removeById($id);
     }
 
     public function fetchAll(){

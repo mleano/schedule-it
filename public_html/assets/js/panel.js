@@ -343,6 +343,7 @@ var courseForm = {
     courseForm.insertCourse(instructor, course, room, courseDays, year);
   },
   insertCourse: function(instructor, course, room, courseDays, year) {
+
     $.ajax({
       url     : 'panel-form.php',
       type    : 'POST',

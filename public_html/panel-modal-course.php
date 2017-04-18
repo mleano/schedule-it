@@ -106,10 +106,9 @@ function courseQuery($sql, $course_number)
 
 function addCourse($course_number)
 {
-    $sql = "INSERT INTO `course` (`course_id`, `course_number`) VALUES (NULL, '$course_number')";
+    $sql = "INSERT INTO `courses` (`course_id`, `course_number`) VALUES (NULL, '$course_number')";
 
     courseQuery($sql, $course_number);
 }
 
 ?>
-

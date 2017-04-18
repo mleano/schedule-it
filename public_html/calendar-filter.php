@@ -32,10 +32,10 @@ function selectCampusCourses() {
   // Dynamically change the ORDER BY value based on what filter button was clicked.
   $filterVal = '';
   if($filter === 'room') {
-    $filterVal = 'room.room_number';
+    $filterVal = 'rooms.room_number';
   }
   elseif($filter === 'instructor') {
-    $filterVal = 'instructor.last_name';
+    $filterVal = 'instructors.last_name';
   }
 
   $startDay = '';
@@ -65,14 +65,14 @@ function selectCampusCourses() {
 
   $stmt = "SELECT
     course_schedules.schedule_id,
-    instructor.first_name, instructor.last_name,
-    course.course_number,
-    room.room_number,
+    instructors.first_name, instructors.last_name,
+    courses.course_number,
+    rooms.room_number,
     course_schedules.start_time, course_schedules.end_time
     FROM course_schedules
-    INNER JOIN instructor ON course_schedules.instructor_id = instructor.instructor_id
-    INNER JOIN course ON course_schedules.course_id = course.course_id
-    INNER JOIN room ON course_schedules.room_id = room.room_id
+    INNER JOIN instructors ON course_schedules.instructor_id = instructors.instructor_id
+    INNER JOIN courses ON course_schedules.course_id = courses.course_id
+    INNER JOIN rooms ON course_schedules.room_id = rooms.room_id
     WHERE course_schedules.start_time
     BETWEEN '$startRange'
     AND '$endRange'
@@ -82,11 +82,12 @@ function selectCampusCourses() {
   // Connect to database.
   $dbh = dbConnect();
   $statement = $dbh->prepare($stmt);
+
   $statement->execute();
 
   // Process the results.
   $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-  // echo $result;
+
   if(!empty($result)){
     // Create object class
     $response = new stdClass();

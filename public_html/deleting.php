@@ -1,28 +1,21 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: gurmandhaliwal
+ * User: gurmandhaliwal and Casey Morris
  * Date: 8/8/16
  * Time: 4:50 PM
  */
 include('../config.php');
-include('Model/Instructor/InstructorService.php');
-require('Model/Instructor/InstructorMapperMySQL.php');
 
 if (isset($_POST['id']) || isset($_POST['type'])) {
-    $id = $_POST['id'];
+    $id = (int) $_POST['id'];
     $type = $_POST['type'];
 }
-
 switch ($type) {
     case 'deleteCourse':
         deleteCourse($id);
         break;
     case 'deleteInstructor' :
-        $instructorService = new InstructorService(new InstructorMapperMySQL());
-        $status = $InstructorService->deleteInstructor($id);
-        return $status;
-        //deleteInstructor($id);
+        deleteInstructor($id);
         break;
     case 'deleteRoom':
         deleteRoom($id);
@@ -35,13 +28,13 @@ function dbQuery($sql, $id) {
 
     $dbh = dbConnect();
 
+
     try {
         $statement = $dbh->prepare($sql);
 
-        $statement->bindParam(':id', $id, PDO::PARAM_STR);
+        $statement->bindParam(':id', $id, PDO::PARAM_INT);
 
         $delete = $statement->execute();
-
         if ($delete) {
             //Return the id and campus in the success response.
             echo json_encode(array('status' => 'success'));
@@ -57,54 +50,28 @@ function dbQuery($sql, $id) {
 }
 
 function deleteInstructor($id) {
-
-    //delete instructor from foreign key table auburn_course
-    $sql = "DELETE FROM `auburn_course` WHERE `instructor_id` = :id;";
-
-    dbQuery($sql, $id);
-
-    //delete instructor from foreign key table kent_course
-    $sql = "DELETE FROM `kent_course` WHERE `instructor_id` = :id;";
-
-    dbQuery($sql, $id);
+    // Change all existing schedules where instructor_id is being deleted to TBD.
 
     //delete instructor from instructor table
-    $sql = "DELETE FROM `instructor` WHERE `instructor_id` = :id;";
+    $sql = "DELETE FROM `instructors` WHERE `instructor_id` = :id;";
 
     dbQuery($sql, $id);
 
 }
 
 function deleteCourse($id){
-    //delete course from foreign key table auburn_course
-    $sql = "DELETE FROM `auburn_course` WHERE `course_id` = :id;";
-
-    dbQuery($sql, $id);
-
-    //delete course from foreign key table kent_course
-    $sql = "DELETE FROM `kent_course` WHERE `course_id` = :id;";
-
-    dbQuery($sql, $id);
+    // Change all existing courses to default of Unknown
 
     //delete instructor from course table
-    $sql = "DELETE FROM `course` WHERE `course_id` = :id;";
+    $sql = "DELETE FROM `courses` WHERE `course_id` = :id;";
 
     dbQuery($sql, $id);
 }
 
 function deleteRoom($id){
-    //delete course from foreign key table auburn_course
-    $sql = "DELETE FROM `auburn_course` WHERE `room_id` = :id;";
-
-    dbQuery($sql, $id);
-
-    //delete course from foreign key table kent_course
-    $sql = "DELETE FROM `kent_course` WHERE `room_id` = :id;";
-
-    dbQuery($sql, $id);
-
+    // Change all room_ids from delete room name to the name Not Assigned
     //delete instructor from course table
-    $sql = "DELETE FROM `room` WHERE `room_id` = :id;";
+    $sql = "DELETE FROM `rooms` WHERE `room_id` = :id;";
 
     dbQuery($sql, $id);
 }

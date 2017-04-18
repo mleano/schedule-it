@@ -28,6 +28,7 @@ function displaySelect() {
 }
 
 function delete_instructor(id) {
+
   if(confirm('Are you sure to delete this instructor ?')) {
     $.ajax({
       url     : './deleting.php',
@@ -39,7 +40,7 @@ function delete_instructor(id) {
 
         if(response.status == 'success') {
 
-          $('#select-instructor').material_select();
+          // $('#select-instructor').material_select();
         }
 
       }
@@ -52,13 +53,14 @@ function delete_instructor(id) {
 
 function delete_course(id) {
   if(confirm('Are you sure to delete this course ?')) {
+
     $.ajax({
       url     : './deleting.php',
       type    : 'POST',
       data    : 'type=deleteCourse&id=' + id,
       dataType: 'json',
       success : function(response) {
-
+        alert(response);
         if(response.status == 'success') {
 
           $('#select-course').material_select();

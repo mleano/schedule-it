@@ -3,7 +3,7 @@
 
   class InstructorService {
     // Stores mapper being used
-    $private storageType;
+    private $storageType;
 
     // Intializes the type of mapper used for storing data
     function __construct($newStorageType){

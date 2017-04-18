@@ -52,7 +52,7 @@ function displayAllCourses()
 
     $dbh = dbConnect();
 
-    $sql = "SELECT * FROM course ORDER BY course_number ASC";
+    $sql = "SELECT * FROM courses ORDER BY course_number ASC";
 
     $statement = $dbh->prepare($sql);
     $statement->execute();
@@ -78,7 +78,7 @@ function displayAllRooms()
 
     $dbh = dbConnect();
 
-    $sql = "SELECT * FROM room ORDER BY room_number ASC";
+    $sql = "SELECT * FROM rooms ORDER BY room_number ASC";
 
     $statement = $dbh->prepare($sql);
     $statement->execute();

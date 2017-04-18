@@ -106,7 +106,7 @@ function roomQuery($sql, $room_number)
 
 function addRoom($room_number)
 {
-    $sql = "INSERT INTO `room` (`room_id`, `room_number`) VALUES (NULL, '$room_number')";
+    $sql = "INSERT INTO `rooms` (`room_id`, `room_number`) VALUES (NULL, '$room_number')";
 
     roomQuery($sql, $room_number);
 }

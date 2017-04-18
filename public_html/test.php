@@ -16,18 +16,18 @@
   // $mapper->removeById($instructor->id);
 
   // Test Service add and remove
-  include('Model/InstructorService.php');
-  $instructorService = new InstructorService();
-  $instructor = $instructorService->addInstructor("Bob","Builder");
-
-  $instructorService = new InstructorService(new InstructorMapperMySQL());
-  $status = $InstructorService->deleteInstructor($id);
-  $instructorService = new InstructorService();
-  $instructor = $instructorService->addInstructor("Bob","Builder");
-  $instructorService->deleteInstructor($instructor);
+  // include('Model/Instructor/InstructorService.php');
+  // include('Model/Instructor/InstructorMapperMySQL.php');
+  // $instructorService = new InstructorService(new InstructorMapperMySQL());
+  //
+  // $instructor = $instructorService->addInstructor("Bob","Builder");
+  //
+  // $instructorService->deleteInstructor(null);
 
   // Test Mapper to displayAll //
   // include('Model/InstructorMapperMySQL.php');
 
+
+  return $_post['id'];
 
 ?>

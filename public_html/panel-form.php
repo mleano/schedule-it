@@ -35,14 +35,11 @@ function insertCourse($instructor, $course, $room, $courseDays, $year) {
   $statement->execute();
 
   // Retrieve unique ID used and insert into course_schedules table
-  $lastId = $dbh->lastInsertId();
-
+  $lastId = (int) $dbh->lastInsertId();
   //Iterate through courseDays array.
   for($row = 0, $size = count($courseDays); $row < $size; ++$row) {
     //Build sql insert query for campus course day.
-
-    $insertCourse = 'INSERT INTO course_schedules(instructor_id, room_id, course_id, start_time, end_time,year, block_id)
-                        VALUES (:instructor, :room, :course, :startTime, :endTime, :year, :blockId)';
+    $insertCourse = "INSERT INTO course_schedules(instructor_id, room_id, course_id, start_time, end_time, year, block_id) VALUES (:instructor, :room, :course, :startTime, :endTime, :year, :blockId)";
 
     //Prepare the statement.
     $statement = $dbh->prepare($insertCourse);
@@ -52,17 +49,13 @@ function insertCourse($instructor, $course, $room, $courseDays, $year) {
     $statement->bindParam(':course', $course, PDO::PARAM_STR);
     $statement->bindParam(':startTime', $courseDays[$row][0], PDO::PARAM_STR);
     $statement->bindParam(':endTime', $courseDays[$row][1], PDO::PARAM_STR);
-    $statement->bindParam(':year', $year, PDO::PARAM_INT);
-    $statement->bindParam(':blockId', $lastId, PDO::PARAM_INT);
+    $statement->bindParam(':year', $year, PDO::PARAM_STR);
+    $statement->bindParam(':blockId', $lastId, PDO::PARAM_STR);
 
     //Execute campus course.
     $statement->execute();
 
   }
-
-  //Return the id and campus in the success response.
-  // echo json_encode(array('status' => 'success', 'id' => $lastId);
-
   //Close the connection
   $dbh = null;
 }

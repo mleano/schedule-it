@@ -90,7 +90,7 @@ function updateCourse($scheduleId, $instructor, $course, $room) {
   $statement->execute();
   $result = $statement->fetch(PDO::FETCH_ASSOC);
   // Block ID represents a scheduled block of time
-  $blockId = $result['block_id'];
+  $blockId = (int) $result['block_id'];
 
 
   //Build sql update query for instructor, course, room.

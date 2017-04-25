@@ -19,13 +19,13 @@ if (isset($_SESSION['username'])) { ?>
                             </button>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="divider"></div>
                         <!--Additional Course Button-->
-                        <button class="add-btn btn col s12 waves-effect waves-light green additional-course">
+                        <!-- <button class="add-btn btn col s12 waves-effect waves-light green additional-course">
                             <i class="material-icons">add</i>
                         </button>
-                    </div>
+                    </div> -->
                     <div class="row right">
                         <!--Cancel Button-->
                         <button class="btn modal-action modal-btn-cancel modal-close waves-effect waves-red green">

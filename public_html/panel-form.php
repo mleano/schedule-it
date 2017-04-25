@@ -56,8 +56,19 @@ function insertCourse($instructor, $course, $room, $courseDays, $year) {
     $statement->execute();
 
   }
+
   //Close the connection
   $dbh = null;
+  
+  // If successful then send success else failed
+  if(!empty($statement)){
+    $response = ['status' => 'success'];
+  }else{
+    $response = ['status' => 'failed'];
+  }
+  //Prep to send as JSON encoded
+  header('Content-type: application/json');
+  echo json_encode($response);
 }
 
 ?>

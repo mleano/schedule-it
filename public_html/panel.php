@@ -9,7 +9,7 @@ if(isset($_SESSION['username'])) { ?>
       <!--Season-->
       <div class="input-field col s4">
         <select id="select-quarter-season" required>
-          <option value="fall">Fall</option>
+          <option value="fall" selected>Fall</option>
           <option value="spring">Spring</option>
           <option value="winter">Winter</option>
           <option value="summer">Summer</option>
@@ -19,7 +19,7 @@ if(isset($_SESSION['username'])) { ?>
       <!--Year-->
       <div class="input-field col s4">
         <select id="select-quarter-year" required>
-          <option id="quarter-year-current"></option>
+          <option id="quarter-year-current" selected></option>
           <option id="quarter-year-second"></option>
           <option id="quarter-year-third"></option>
         </select>
@@ -98,7 +98,7 @@ if(isset($_SESSION['username'])) { ?>
           <!--Days Select-->
           <div class="input-field col s4">
             <select id="select-d" class="select-days" multiple required>
-              <option value="monday">Monday</option>
+              <option value="monday" selected>Monday</option>
               <option value="tuesday">Tuesday</option>
               <option value="wednesday">Wednesday</option>
               <option value="thursday">Thursday</option>
@@ -110,7 +110,7 @@ if(isset($_SESSION['username'])) { ?>
           <!--Hour-->
           <div class="input-field col s2">
             <select id="select-s-h" class="select-start-hour" required>
-              <option value="08">8 AM</option>
+              <option value="08"selected>8 AM</option>
               <option value="09">9 AM</option>
               <option value="10">10 AM</option>
               <option value="11">11 AM</option>
@@ -130,7 +130,7 @@ if(isset($_SESSION['username'])) { ?>
           <!--Minute-->
           <div class="input-field col s2">
             <select id="select-s-m" class="select-start-minute" required>
-              <option value="00">00</option>
+              <option value="00"selected>00</option>
               <option value="10">10</option>
               <option value="20">20</option>
               <option value="30">30</option>
@@ -144,8 +144,8 @@ if(isset($_SESSION['username'])) { ?>
           <!--Hour-->
           <div class="input-field col s2">
             <select id="select-e-h" class="select-end-hour" required>
-              <option value="08">8 AM</option>
-              <option value="09">9 AM</option>
+              <!-- <option value="08" selected>8 AM</option> -->
+              <option value="09" selected>9 AM</option>
               <option value="10">10 AM</option>
               <option value="11">11 AM</option>
               <option value="12">12 PM</option>
@@ -164,7 +164,7 @@ if(isset($_SESSION['username'])) { ?>
           <!--Minute-->
           <div class="input-field col s2">
             <select id="select-e-m" class="select-end-minute" required>
-              <option value="00">00</option>
+              <option value="00" selected>00</option>
               <option value="10">10</option>
               <option value="20">20</option>
               <option value="30">30</option>

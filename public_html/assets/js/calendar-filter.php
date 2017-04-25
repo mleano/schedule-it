@@ -22,9 +22,9 @@ if(isset($_POST['type']) || isset($_POST['filter'])
 }
 
 /**
- * Get all scheduled courses.
+ * Get all scheduled courses for Auburn or Kent courses.
  */
-function selectCampusCourses(){
+function selectCampusCourses() {
   global $filter;
   global $quarter;
   global $year;
@@ -78,7 +78,6 @@ function selectCampusCourses(){
     AND '$endRange'
     AND year = $year
     ORDER BY $filterVal ASC";
-
 
   // Connect to database.
   $dbh = dbConnect();

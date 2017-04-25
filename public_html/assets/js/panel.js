@@ -356,14 +356,7 @@ var courseForm = {
       dataType: 'json',
       success : function(response) {
         // courses.selectCampusCourses and reload new course data into calendar.
-        if(courses.filterClick === 'room') {
-          courses.searchBy = 'room';
-          courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
-        }
-        if(courses.filterClick === 'instructor') {
-          courses.searchBy = 'instructor';
-          courses.selectCampusCourses(courses.searchBy, courses.quarter, courses.year);
-        }
+        CoursesManager.loadContent();
 
       },
       error   : function(error) {
